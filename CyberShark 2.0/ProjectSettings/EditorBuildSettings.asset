@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Alcystuff/ICopiedVictorsscene.unity
+    guid: daf135e0ea2c9cf49b1e0b8b1268f848
+  - enabled: 1
+    path: Assets/VictorsStuff/VictorsScene 1.unity
+    guid: 36e46da6f77fb964f8ef6ae2e9b87fbf
   m_configObjects: {}
