@@ -21,10 +21,34 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] private bool westIsOrigin;
     [SerializeField] private bool eastIsOrigin;
 
+    private bool arrivedNorthFromWest;
+    private bool arrivedNorthFromEast;
+    private bool arrivedSouthFromWest;
+    private bool arrivedSouthFromEast;
+    private bool arrivedEastFromNorth;
+    private bool arrivedEastFromSouth;
+    private bool arrivedWestFromNorth;
+    private bool arrivedWestFromSouth;
+
+    private bool goingClockwise;
+    private bool goingCounterClockwise;
+
+    [SerializeField] int pointsActivated = 0;
+
+
 
     [SerializeField] private Color activatedColor;
 
-    
+    [SerializeField] private GameObject playerMesh;
+
+    [SerializeField] private Transform playerPos;
+    [SerializeField] private Vector3 dirToTarget;
+    [SerializeField] private float dot1;
+    [SerializeField] private float dot2;
+
+    [SerializeField] private float initialDot;
+
+
 
     [SerializeField] private bool isCurrentlytargeted = false;
 
@@ -42,6 +66,12 @@ public class EnemyScript : MonoBehaviour
         EastDetection();
         WestDetection();
 
+        AttemptAtDot();
+
+        BoolCalculator();
+
+        
+
     }
 
 
@@ -56,6 +86,7 @@ public class EnemyScript : MonoBehaviour
             
             isCurrentlytargeted = true;
             northIsActivated = true;
+            pointsActivated++;
 
             if(southIsActivated == false && eastIsActivated == false && westIsActivated == false)
             {
@@ -74,6 +105,14 @@ public class EnemyScript : MonoBehaviour
             isCurrentlytargeted = false;         
         }
 
+        if (northIsActivated == true && westIsActivated == true && isCurrentlytargeted == false && dot1 > 0 && dot2 < 0 && arrivedNorthFromWest == true
+          || northIsActivated == true && eastIsActivated == true && isCurrentlytargeted == false && dot1 > 0 && dot2 > 0 && arrivedNorthFromEast == true)
+        {
+            pointsActivated--;
+            northIsActivated = false;
+            northSphereRenderer.material.SetColor("_Color", Color.white);
+        }
+
         if (Physics.Raycast(transform.position, northDirection, 100f, playerLayerMask) && northIsOrigin == true && northIsActivated == true && southIsActivated == true && westIsActivated == true && eastIsActivated == true)
 
         {
@@ -90,6 +129,7 @@ public class EnemyScript : MonoBehaviour
         {
             southIsActivated = true;
             isCurrentlytargeted = true;
+            pointsActivated++;
         
 
             if (northIsActivated == false && eastIsActivated == false && westIsActivated == false)
@@ -102,12 +142,18 @@ public class EnemyScript : MonoBehaviour
                 southSphereRenderer.material.SetColor("_Color", activatedColor);
             }
 
-
-
         }
         else
         {
             isCurrentlytargeted = false;
+        }
+
+        if (southIsActivated == true && eastIsActivated == true && isCurrentlytargeted == false && dot1 < 0 && dot2 > 0 && arrivedSouthFromEast
+        || southIsActivated == true && westIsActivated == true && isCurrentlytargeted == false && dot1 < 0 && dot2 < 0 && arrivedSouthFromWest)
+        {
+            pointsActivated--;
+            southIsActivated = false;
+            southSphereRenderer.material.SetColor("_Color", Color.white);
         }
 
         if (Physics.Raycast(transform.position, southDirection, 100f, playerLayerMask) && southIsOrigin == true && northIsActivated == true && southIsActivated == true && westIsActivated == true && eastIsActivated == true)
@@ -129,6 +175,7 @@ public class EnemyScript : MonoBehaviour
         {
             eastIsActivated = true;
             isCurrentlytargeted = true;
+            pointsActivated++;
             
 
             if (northIsActivated == false && southIsActivated == false && westIsActivated == false)
@@ -146,6 +193,16 @@ public class EnemyScript : MonoBehaviour
         else
         {
             isCurrentlytargeted = false;
+        }
+
+        // try for cancelling activation
+
+        if(eastIsActivated == true && northIsActivated && isCurrentlytargeted == false && dot1 > 0 && dot2 > 0 && arrivedEastFromNorth == true 
+            || eastIsActivated == true && southIsActivated && isCurrentlytargeted == false && dot1 < 0 && dot2 > 0 && arrivedEastFromSouth)
+        {
+            pointsActivated--;
+            eastIsActivated = false;
+            eastSphereRenderer.material.SetColor("_Color", Color.white);
         }
 
         if (Physics.Raycast(transform.position, eastDirection, 100f, playerLayerMask) && eastIsOrigin == true && northIsActivated == true && southIsActivated == true && westIsActivated == true && eastIsActivated == true)
@@ -166,6 +223,7 @@ public class EnemyScript : MonoBehaviour
         {
             westIsActivated = true;
             isCurrentlytargeted = true;
+            pointsActivated++;
             
 
             if (northIsActivated == false && eastIsActivated == false && southIsActivated == false)
@@ -183,10 +241,57 @@ public class EnemyScript : MonoBehaviour
         {
             isCurrentlytargeted = false;
         }
+        if (westIsActivated == true && southIsActivated == true && isCurrentlytargeted == false && dot1 < 0 && dot2 < 0 && arrivedWestFromSouth
+            || westIsActivated == true && northIsActivated == true && isCurrentlytargeted == false && dot1 > 0 && dot2 < 0 && arrivedWestFromNorth)
+        {
+            pointsActivated--;
+            westIsActivated = false;
+            westSphereRenderer.material.SetColor("_Color", Color.white);
+        }
 
         if (Physics.Raycast(transform.position, westDirection, 100f, playerLayerMask) && westIsOrigin == true && northIsActivated == true && southIsActivated == true && westIsActivated == true && eastIsActivated == true)
         {
             Destroy(this.gameObject);
+        }
+
+    }
+
+    private void AttemptAtDot()
+    {
+        dirToTarget = Vector3.Normalize(playerPos.transform.position - transform.position);
+        dot1 = Vector3.Dot(Vector3.forward, dirToTarget);
+
+        dot2 = Vector3.Dot(Vector3.right, dirToTarget);
+
+       
+    }
+
+    private void BoolCalculator()
+    {
+        if (northIsOrigin && westIsActivated || westIsOrigin && southIsActivated || southIsOrigin && eastIsActivated || eastIsOrigin && northIsActivated)
+        {
+            goingCounterClockwise = true;
+            return;
+        }
+
+        if (northIsOrigin && eastIsActivated || eastIsOrigin && southIsActivated || southIsOrigin && westIsActivated || westIsOrigin && northIsActivated)
+        {
+            goingClockwise = true;
+        }
+
+
+    }
+
+    private void WhichDirection()
+    {
+        if(pointsActivated == 2 && goingClockwise)
+        {
+
+        }
+
+        if(pointsActivated == 2 && goingCounterClockwise)
+        {
+
         }
 
     }

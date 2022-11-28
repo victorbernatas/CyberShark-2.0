@@ -202,6 +202,7 @@ GameObject:
   - component: {fileID: 5443945748699480608}
   - component: {fileID: 5443945748699480615}
   - component: {fileID: 5443945748699480614}
+  - component: {fileID: 326680994}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -289,6 +290,42 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &326680994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5443945748699480613}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc4ae90b77b6d9f478377361933b98e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  northSphere: {fileID: 768844885554667102}
+  eastSphere: {fileID: 2620787038899918877}
+  southSphere: {fileID: 7086915657908486003}
+  westSphere: {fileID: 8609129354511946580}
+  northIsActivated: 0
+  southIsActivated: 0
+  eastIsActivated: 0
+  westIsActivated: 0
+  isCurrentlytargeted: 0
+  northIsOrigin: 0
+  southIsOrigin: 0
+  westIsOrigin: 0
+  eastIsOrigin: 0
+  dot1: 0
+  dot2: 0
+  activatedColor: {r: 1, g: 0.92222625, b: 0, a: 0}
+  originColor: {r: 0.9811321, g: 0, b: 0.03393105, a: 0}
+  playerPos: {fileID: 0}
+  dirToTarget: {x: 0, y: 0, z: 0}
+  goingClockwise: 0
+  goingCounterClockwise: 0
 --- !u!1 &7086915657908486003
 GameObject:
   m_ObjectHideFlags: 0

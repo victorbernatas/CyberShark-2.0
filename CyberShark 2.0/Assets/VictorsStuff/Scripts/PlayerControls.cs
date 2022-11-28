@@ -6,7 +6,7 @@ public class PlayerControls : MonoBehaviour
 {
 
     private Rigidbody playerRigidBody;
-    private SharkMovement1 sharkMovement;
+    private SharkMovement sharkMovement;
     private Camera mainCamera;
 
 
@@ -24,7 +24,7 @@ public class PlayerControls : MonoBehaviour
     {
         playerRigidBody = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
-        sharkMovement = new SharkMovement1();
+        sharkMovement = new SharkMovement();
         sharkMovement.Shark.Enable();
         sharkMovement.Shark.Movement.performed += Movement_performed;
     }
@@ -38,8 +38,14 @@ public class PlayerControls : MonoBehaviour
         {
             RotateToFaceVelocity();
         }
-        
-        
+
+        else
+        {
+            playerRigidBody.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+
+       
+
     }
 
     private void Update()
@@ -74,6 +80,8 @@ public class PlayerControls : MonoBehaviour
 
 
     private void KeepPlayerOnScreen()
+
+
     {
         Vector3 newPosition = transform.position;
         Vector3 viewportPosition = mainCamera.WorldToViewportPoint(transform.position);
@@ -98,10 +106,11 @@ public class PlayerControls : MonoBehaviour
             newPosition.z = newPosition.z + 0.05f;
         }
 
-
-
         transform.position = newPosition;
     }
+
+
+   
 
    
 
